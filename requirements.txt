@@ -4,3 +4,4 @@ mcrcon~=0.7.0
 requests~=2.28.2
 ping3~=4.0.4
 PyYAML~=6.0
+paramiko~=3.1.0
