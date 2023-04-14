@@ -1,9 +1,15 @@
 from interactions import Extension
 from interactions import slash_command, slash_option, OptionType, SlashCommandChoice
 from interactions import InteractionContext
+from logger import logger
+
+from commands.indigo_api import IndigoApi
 
 
-class MineBot(Extension):
+indigo = IndigoApi()
+
+
+class IndigoCommand(Extension):
     @slash_command(name="indigo", description="Indigoサーバーの状態を更新")
     @slash_option(
         name="state",
@@ -17,15 +23,17 @@ class MineBot(Extension):
         ]
     )
     async def indigo(self, ctx: InteractionContext, **kwargs):
+        logger.info(f"receive indigo command: {ctx.command.name}")
         prog_message = await ctx.send("処理中...")
         kwargs = ctx.kwargs
+        logger.info(kwargs)
         if kwargs["state"] == "on":
             message = indigo.start_server()
-            server_state.indigo = True
+            # server_state.indigo = True
             await prog_message.edit(content=message)
         elif kwargs["state"] == "off":
             message = indigo.stop_server()
-            server_state.indigo = False
+            # server_state.indigo = False
             await prog_message.edit(content=message)
         elif kwargs["state"] == "update":
             state = indigo.update_status()
@@ -33,16 +41,16 @@ class MineBot(Extension):
             if state is True:
                 print("server is up")
                 text += "Indigoサーバーは起動しています。"
-                server_state.indigo = True
+                # server_state.indigo = True
             elif state is False:
                 print("server is down")
                 text += "Indigoサーバーは停止しています。"
-                server_state.indigo = False
+                # server_state.indigo = False
             await prog_message.edit(content=text)
-        await server_state.update_presence()
+        # await server_state.update_presence()
         return True
 
     @indigo.error
     async def indigo_error(self, e, *args, **kwargs):
-        print(f"indigo hit error with {args=}, {kwargs=}")
-        print(e)
+        logger.error(f"indigo hit error with {args=}, {kwargs=}")
+        logger.error(e)
