@@ -5,7 +5,6 @@ from logger import logger
 
 from commands.indigo_api import IndigoApi
 
-
 indigo = IndigoApi()
 
 
@@ -54,3 +53,7 @@ class IndigoCommand(Extension):
     async def indigo_error(self, e, *args, **kwargs):
         logger.error(f"indigo hit error with {args=}, {kwargs=}")
         logger.error(e)
+
+
+def setup(bot):
+    IndigoCommand(bot)
