@@ -64,7 +64,7 @@ class McApi:
         try:
             self.ssh_connect()
 
-            CMD = "/bin/bash /home/ubuntu/mod/boot start"
+            CMD = "/bin/bash /home/ubuntu/mod/boot.sh start"
             stdin, stdout, stderr = self.client.exec_command(CMD)
 
             logger.info(self.res_stdout(stdout))
@@ -80,7 +80,7 @@ class McApi:
         try:
             self.ssh_connect()
 
-            CMD = "/bin/bash /home/ubuntu/mod/boot stop"
+            CMD = "/bin/bash /home/ubuntu/mod/boot.sh stop"
             stdin, stdout, stderr = self.client.exec_command(CMD)
 
             logger.info(self.res_stdout(stdout))
