@@ -2,7 +2,7 @@ from interactions import Extension
 from interactions import slash_command, slash_option, OptionType, SlashCommandChoice
 from interactions import InteractionContext
 from logger import logger
-
+from bot_client import server_state
 from commands.indigo_api import IndigoApi
 
 indigo = IndigoApi()
@@ -46,7 +46,7 @@ class IndigoCommand(Extension):
                 text += "Indigoサーバーは停止しています。"
                 # server_state.indigo = False
             await prog_message.edit(content=text)
-        # await server_state.update_presence()
+        await server_state.update_presence()
         return True
 
     @indigo.error

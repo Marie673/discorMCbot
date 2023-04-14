@@ -2,6 +2,8 @@ import requests
 from ping3 import ping
 import time
 
+from bot_client import server_state
+
 from config import config
 from logger import logger
 
@@ -79,10 +81,13 @@ class IndigoApi:
 
         if response.status_code == 200:
             logger.info("server started.")
+            server_state.indigo = True
             return "サーバーが起動しました"
         elif response.status_code == 400:
+            server_state.indigo = True
             return "サーバーはすでに起動しています"
         else:
+            server_state.indigo = None
             return response.text
 
     def stop_server(self):
@@ -97,16 +102,21 @@ class IndigoApi:
                                  headers=headers, json=data)
 
         if response.status_code == 200:
-            print("server stopped.")
+            logger.info("server stopped.")
+            server_state.indigo = False
             return "サーバーが停止しました"
         elif response.status_code == 400:
+            server_state.indigo = False
             return "サーバーはすでに停止しています"
         else:
+            server_state.indigo = None
             return response.text
 
     def update_status(self):
         res = ping(self.minecraft_instance_address, timeout=2)
         if res is None:
+            server_state.indigo = False
             return False
         else:
+            server_state.indigo = True
             return True

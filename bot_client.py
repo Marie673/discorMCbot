@@ -1,10 +1,11 @@
-from interactions import Client, Task, IntervalTrigger
-
+import logging
 from logger import logger
+import interactions
+from interactions import Client, Intents
 
 
 class ServerState:
-    def __init__(self, bot: Client):
+    def __init__(self):
         self.indigo = None
         self.mc = None
         self.bot = bot
@@ -23,3 +24,11 @@ class ServerState:
         act += "     "
         logger.info(act)
         await self.bot.change_presence(activity=act)
+
+
+logging.basicConfig()
+cls_log = logging.getLogger(interactions.const.logger_name)
+cls_log.setLevel(logging.ERROR)
+bot = Client(intents=Intents.DEFAULT, sync_interactions=True, asyncio_debug=True, logger=cls_log)
+server_state = ServerState()
+

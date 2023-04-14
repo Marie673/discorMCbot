@@ -1,7 +1,11 @@
 import socket
+import time
 
 from paramiko import SSHClient, AutoAddPolicy
-from mcrcon import MCRcon
+import threading
+
+from main import flag
+from bot_client import server_state
 
 from config import config
 from logger import logger
@@ -20,16 +24,19 @@ class McApi:
         self.mcr_pass = config['MCRCON']['password']
         self.mcr_port = int(config['MCRCON']['port'])
         self.mcr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.mcr.settimeout(5)
         # self.mcr = MCRcon(self.mcr_addr, self.mcr_pass, port=self.mcr_port,
         #                   tlsmode=0, timeout=5)
 
     def mc_connect(self):
         try:
             self.mcr.connect((self.mcr_addr, self.mcr_port))
+            server_state.mc = True
         except Exception as e:
             logger.error(e)
+            server_state.mc = False
         finally:
-            self.mcr.close()
+            pass
 
     def ssh_connect(self):
         self.client.connect(
@@ -54,23 +61,33 @@ class McApi:
         return err
 
     def start_mc(self):
-        self.ssh_connect()
+        try:
+            self.ssh_connect()
 
-        CMD = "/bin/bash /home/ubuntu/mod/boot start"
-        stdin, stdout, stderr = self.client.exec_command(CMD)
+            CMD = "/bin/bash /home/ubuntu/mod/boot start"
+            stdin, stdout, stderr = self.client.exec_command(CMD)
 
-        logger.info(self.res_stdout(stdout))
-        logger.error(self.res_stderr(stderr))
+            logger.info(self.res_stdout(stdout))
+            logger.error(self.res_stderr(stderr))
 
-        self.client.close()
+        except Exception as e:
+            logger.error(e)
+
+        finally:
+            self.client.close()
 
     def stop_mc(self):
-        self.ssh_connect()
+        try:
+            self.ssh_connect()
 
-        CMD = "/bin/bash /home/ubuntu/mod/boot stop"
-        stdin, stdout, stderr = self.client.exec_command(CMD)
+            CMD = "/bin/bash /home/ubuntu/mod/boot stop"
+            stdin, stdout, stderr = self.client.exec_command(CMD)
 
-        logger.info(self.res_stdout(stdout))
-        logger.error(self.res_stderr(stderr))
+            logger.info(self.res_stdout(stdout))
+            logger.error(self.res_stderr(stderr))
 
-        self.client.close()
+        except Exception as e:
+            logger.error(e)
+
+        finally:
+            self.client.close()

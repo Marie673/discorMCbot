@@ -1,8 +1,12 @@
 from interactions import Extension
 from interactions import slash_command, slash_option, OptionType, SlashCommandChoice
 from interactions import InteractionContext
-
 from logger import logger
+
+from bot_client import server_state
+from commands.mc_api import McApi
+
+mc = McApi()
 
 
 class McCommand(Extension):
@@ -24,19 +28,18 @@ class McCommand(Extension):
         kwargs = ctx.kwargs
         logger.info(kwargs)
         if kwargs["state"] == "on":
+            mc.start_mc()
             # server_state.mc = True
             await prog_message.edit(content="起動が完了しました")
         elif kwargs["state"] == "off":
-            mc.stop()
+            mc.stop_mc()
             # server_state.mc = False
             await prog_message.edit(content="停止が完了しました")
         elif kwargs["state"] == "update":
-            res = mc.connect()
+            res = mc.mc_connect()
             if res is True:
-                server_state.mc = True
                 await prog_message.edit(content="マイクラサーバーは起動しています")
             else:
-                server_state.mc = False
                 await prog_message.edit(content="マイクラサーバーは起動していません")
         await server_state.update_presence()
         return True

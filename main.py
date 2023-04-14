@@ -1,13 +1,15 @@
 import logging
-import asyncio
-import interactions
-from interactions import Client, Intents, listen, Task, IntervalTrigger
+import time
+from interactions import listen, Task, IntervalTrigger
 from interactions.ext import prefixed_commands
 
-from bot.bot_status import ServerState
+from bot_client import bot, server_state
 
 from config import config
 from logger import logger
+
+
+flag = True
 
 
 @listen()
@@ -24,22 +26,20 @@ async def on_ready():
 @Task.create(IntervalTrigger(minutes=1))
 async def update_presence_schedule():
     logger.debug("update presence")
-    await state.update_presence()
+    await server_state.update_presence()
 
 
 if __name__ == "__main__":
-    logging.basicConfig()
-    cls_log = logging.getLogger(interactions.const.logger_name)
-    cls_log.setLevel(logging.ERROR)
-
-    bot = Client(intents=Intents.DEFAULT, sync_interactions=True, asyncio_debug=True, logger=cls_log)
     prefixed_commands.setup(bot)
-    state = ServerState(bot)
 
     bot.load_extension("commands.indigo")
+    bot.load_extension("commands.mc")
     discord_token = config['DISCORD']['token']
     try:
         bot.start(discord_token)
         logger.info("bot is start")
+    except KeyboardInterrupt:
+        flag = False
+        time.sleep(5)
     except Exception as e:
         logging.error(e)
