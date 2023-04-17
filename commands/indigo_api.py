@@ -46,10 +46,10 @@ class IndigoApi:
             raise "Oauth failed"
 
     def check_exp(self):
-        now_time = time.time()
-        if now_time < self.issuedAt + self.expiresIn:
-            return
-        else:
+        now_time = time.time() * 1000
+        logger.debug(now_time)
+        logger.debug(str(self.issuedAt + self.expiresIn) + ":" + str(self.issuedAt) + ":" + str(self.expiresIn))
+        if now_time >= self.issuedAt + self.expiresIn:
             self.start()
 
     def get_mc_instance_ids(self):

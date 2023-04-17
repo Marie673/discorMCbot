@@ -28,11 +28,9 @@ class IndigoCommand(Extension):
         logger.info(kwargs)
         if kwargs["state"] == "on":
             message = indigo.start_server()
-            # server_state.indigo = True
             await prog_message.edit(content=message)
         elif kwargs["state"] == "off":
             message = indigo.stop_server()
-            # server_state.indigo = False
             await prog_message.edit(content=message)
         elif kwargs["state"] == "update":
             state = indigo.update_status()
@@ -44,7 +42,6 @@ class IndigoCommand(Extension):
             elif state is False:
                 print("server is down")
                 text += "Indigoサーバーは停止しています。"
-                # server_state.indigo = False
             await prog_message.edit(content=text)
         await server_state.update_presence()
         return True
