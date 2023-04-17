@@ -31,9 +31,8 @@ class McApi:
     def mc_connect(self):
         try:
             self.mcr.connect((self.mcr_addr, self.mcr_port))
-            print("test")
         except Exception as e:
-            logger.error(e)
+            raise e
         finally:
             self.mcr.close()
 
