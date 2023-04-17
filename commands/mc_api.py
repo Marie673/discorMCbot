@@ -31,10 +31,9 @@ class McApi:
     def mc_connect(self):
         try:
             self.mcr.connect((self.mcr_addr, self.mcr_port))
-            server_state.mc = True
         except Exception as e:
             logger.error(e)
-            server_state.mc = False
+            raise e
         finally:
             pass
 
@@ -91,3 +90,13 @@ class McApi:
 
         finally:
             self.client.close()
+
+    def update_mc(self):
+        try:
+            self.mc_connect()
+            server_state.mc = True
+        except Exception as e:
+            logger.error(e)
+            server_state.mc = False
+
+        self.mcr.close()
