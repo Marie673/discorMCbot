@@ -35,7 +35,7 @@ class McApi:
             logger.error(e)
             raise e
         finally:
-            pass
+            self.mcr.close()
 
     def ssh_connect(self):
         self.client.connect(
@@ -98,5 +98,3 @@ class McApi:
         except Exception as e:
             logger.error(e)
             server_state.mc = False
-
-        self.mcr.close()
