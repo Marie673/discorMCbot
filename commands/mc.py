@@ -36,7 +36,7 @@ class McCommand(Extension):
             # server_state.mc = False
             await prog_message.edit(content="停止が完了しました")
         elif kwargs["state"] == "update":
-            mc.mc_connect()
+            mc.update_mc()
             if server_state.mc is True:
                 await prog_message.edit(content="マイクラサーバーは起動しています")
             else:
