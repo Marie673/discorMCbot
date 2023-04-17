@@ -31,9 +31,9 @@ class McApi:
     def mc_connect(self):
         try:
             self.mcr.connect((self.mcr_addr, self.mcr_port))
+            print("test")
         except Exception as e:
             logger.error(e)
-            raise e
         finally:
             self.mcr.close()
 
@@ -63,8 +63,8 @@ class McApi:
         try:
             self.ssh_connect()
 
-            CMD = "/bin/bash /home/ubuntu/mod/boot.sh start"
-            stdin, stdout, stderr = self.client.exec_command(CMD)
+            cmd = "/bin/bash /home/ubuntu/mod/boot.sh start"
+            stdin, stdout, stderr = self.client.exec_command(cmd)
 
             logger.info(self.res_stdout(stdout))
             logger.error(self.res_stderr(stderr))
@@ -79,8 +79,8 @@ class McApi:
         try:
             self.ssh_connect()
 
-            CMD = "/bin/bash /home/ubuntu/mod/boot.sh stop"
-            stdin, stdout, stderr = self.client.exec_command(CMD)
+            cmd = "/bin/bash /home/ubuntu/mod/boot.sh stop"
+            stdin, stdout, stderr = self.client.exec_command(cmd)
 
             logger.info(self.res_stdout(stdout))
             logger.error(self.res_stderr(stderr))
@@ -98,3 +98,5 @@ class McApi:
         except Exception as e:
             logger.error(e)
             server_state.mc = False
+        finally:
+            self.mcr.close()
